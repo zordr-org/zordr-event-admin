@@ -21,10 +21,8 @@ export class ZordrApiError extends Error {
 }
 
 // ─── Base URL ─────────────────────────────────────────────────────────────────
-// In mock mode: route to Next.js route handlers on the same origin (/api/...)
 // In real mode: route to the external backend (NEXT_PUBLIC_API_URL)
-const USE_MOCK = process.env.NEXT_PUBLIC_USE_MOCK_API === 'true'
-const BASE_URL = USE_MOCK ? '/api' : (process.env.NEXT_PUBLIC_API_URL ?? '')
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? ''
 
 // ─── Core fetch wrapper ───────────────────────────────────────────────────────
 export async function apiFetch<T>(
