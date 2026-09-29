@@ -48,6 +48,10 @@ Status: Complete and tested
 
 **Field-level scoping**: The spec indicates that roles like Support should see minimal financial data. Currently, the Dashboard shows GMV and financial KPIs to everyone with `dashboard/view` permission, as hiding it dynamically on the frontend based on role isn't robust. This must be raised with the backend team to enforce field-level scoping on the `/api/admin/dashboard/summary` endpoint (i.e. omit financial data for roles that shouldn't see it).
 
+**Missing Organizer Endpoints**: 
+1. The design for the Organizer Detail screen includes an "Update Organizer" button, but `docs/api_contract.pdf` (and `.txt`) does **not** define an endpoint for updating an organizer from the Admin panel (only the Organizer Portal has `PUT /api/v1/organizer/profile`). I have listed this under Open Questions and will render the button disabled with a tooltip until backend support is added.
+2. The spec mentions a bank detail "reveal" functionality that is audit-logged, however, there is **no dedicated reveal API endpoint** listed in the contract. I have left the bank details tab utilizing the existing data and will add this functionality once the backend specifies the endpoint.
+
 ---
 
 ## Files Modified/Created

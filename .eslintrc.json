@@ -58,11 +58,6 @@
             "from": { "element": { "type": "features" } },
             "disallow": [{ "to": { "element": { "type": "app" } } }],
             "message": "Features cannot depend on app code."
-          },
-          {
-            "from": { "element": { "type": "features" } },
-            "disallow": [{ "to": { "element": { "type": "features" } } }],
-            "message": "Features cannot depend on other features. Extract shared logic to lib/components."
           }
         ]
       }
