@@ -119,7 +119,7 @@ export async function mockLogoutHandler(_req: NextRequest): Promise<NextResponse
 }
 
 // ─── Dashboard mock scenarios ──────────────────────────────────────────────────
-import type { DashboardSummary, TimeRange } from '@/types/dashboard'
+import type { DashboardSummary, TimeRange } from '@/features/dashboard/types'
 
 export async function mockDashboardSummaryHandler(req: NextRequest): Promise<NextResponse> {
   const url = new URL(req.url)

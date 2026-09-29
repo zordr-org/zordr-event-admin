@@ -46,7 +46,7 @@ export function DualLineTrend({
           />
           <Tooltip 
             contentStyle={{ borderRadius: '8px', border: '1px solid hsl(var(--border))', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-            formatter={(value: number, name: string) => [formatNumber(value), name]}
+            formatter={(value: any, name: any) => [formatNumber(Number(value)), name]}
             labelStyle={{ color: 'hsl(var(--muted-foreground))', marginBottom: '4px' }}
           />
           <Legend 

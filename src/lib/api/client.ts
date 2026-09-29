@@ -134,7 +134,7 @@ export async function postLogout(): Promise<void> {
 }
 
 // ─── Dashboard endpoints ──────────────────────────────────────────────────────
-import type { DashboardSummary, TimeRange } from '@/types/dashboard'
+import type { DashboardSummary, TimeRange } from '@/features/dashboard/types'
 
 export async function getDashboardSummary(range: TimeRange): Promise<DashboardSummary> {
   return apiFetch<DashboardSummary>(`/admin/dashboard/summary?range=${range}`)

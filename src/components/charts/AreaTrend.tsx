@@ -47,7 +47,7 @@ export function AreaTrend({ data, color = 'hsl(var(--brand))', height = 300, val
           />
           <Tooltip 
             contentStyle={{ borderRadius: '8px', border: '1px solid hsl(var(--border))', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-            formatter={(value: number) => [valuePrefix === 'currency' ? formatInr(value) : formatNumber(value), '']}
+            formatter={(value: any) => [valuePrefix === 'currency' ? formatInr(Number(value)) : formatNumber(Number(value)), '']}
             labelStyle={{ color: 'hsl(var(--muted-foreground))', marginBottom: '4px' }}
           />
           <Area 

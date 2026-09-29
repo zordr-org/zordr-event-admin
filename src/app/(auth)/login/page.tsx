@@ -7,8 +7,8 @@ import {
   ShieldCheck,
   ExternalLink,
 } from 'lucide-react'
-import { LoginForm } from '@/components/auth/LoginForm'
-import { ZordrLogo } from '@/components/auth/ZordrLogo'
+import { LoginForm } from '@/features/auth/components/LoginForm'
+import { ZordrLogo } from '@/features/auth/components/ZordrLogo'
 
 export const metadata: Metadata = {
   title: 'Admin Login | Zordr Admin Portal',

@@ -26,7 +26,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { AreaTrend } from '@/components/charts/AreaTrend'
 import { DualLineTrend } from '@/components/charts/DualLineTrend'
 import { useDashboardSummary } from '@/features/dashboard/hooks'
-import type { TimeRange, ActivityItem } from '@/types/dashboard'
+import type { TimeRange, ActivityItem } from '@/features/dashboard/types'
 import { formatRelativeTime } from '@/lib/format'
 
 const KPI_ICONS: Record<string, React.ReactNode> = {
