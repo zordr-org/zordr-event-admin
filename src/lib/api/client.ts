@@ -27,7 +27,7 @@ const USE_MOCK = process.env.NEXT_PUBLIC_USE_MOCK_API === 'true'
 const BASE_URL = USE_MOCK ? '/api' : (process.env.NEXT_PUBLIC_API_URL ?? '')
 
 // ─── Core fetch wrapper ───────────────────────────────────────────────────────
-async function apiFetch<T>(
+export async function apiFetch<T>(
   path: string,
   options: RequestInit = {},
 ): Promise<T> {
@@ -80,62 +80,3 @@ async function apiFetch<T>(
   return body as T
 }
 
-// ─── Auth endpoints ───────────────────────────────────────────────────────────
-export interface LoginRequest {
-  email: string
-  password: string
-}
-
-export interface LoginSuccessResponse {
-  mfaRequired?: false
-  user?: { id: string; name: string; email: string; role: string }
-}
-
-export interface LoginMfaResponse {
-  mfaRequired: true
-  challengeId: string
-}
-
-export type LoginResponse = LoginSuccessResponse | LoginMfaResponse
-
-export async function postLogin(data: LoginRequest): Promise<LoginResponse> {
-  return apiFetch<LoginResponse>('/admin/auth/login', {
-    method: 'POST',
-    body: JSON.stringify(data),
-  })
-}
-
-export interface MfaVerifyRequest {
-  challengeId: string
-  code: string
-}
-
-export interface MfaVerifyResponse {
-  user?: { id: string; name: string; email: string; role: string }
-}
-
-export async function postMfaVerify(data: MfaVerifyRequest): Promise<MfaVerifyResponse> {
-  return apiFetch<MfaVerifyResponse>('/admin/auth/mfa/verify', {
-    method: 'POST',
-    body: JSON.stringify(data),
-  })
-}
-
-// ─── Me endpoint ──────────────────────────────────────────────────────────────
-import type { AdminUser } from '@/types/auth'
-
-export async function getMe(): Promise<AdminUser> {
-  return apiFetch<AdminUser>('/admin/auth/me')
-}
-
-// ─── Logout endpoint ──────────────────────────────────────────────────────────
-export async function postLogout(): Promise<void> {
-  await apiFetch<unknown>('/admin/auth/logout', { method: 'POST' })
-}
-
-// ─── Dashboard endpoints ──────────────────────────────────────────────────────
-import type { DashboardSummary, TimeRange } from '@/features/dashboard/types'
-
-export async function getDashboardSummary(range: TimeRange): Promise<DashboardSummary> {
-  return apiFetch<DashboardSummary>(`/admin/dashboard/summary?range=${range}`)
-}

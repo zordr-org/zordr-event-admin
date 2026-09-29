@@ -6,18 +6,20 @@ import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import { ShieldCheck, Loader2, ArrowLeft } from 'lucide-react'
 import { mfaSchema, type MfaFormValues } from '../schemas'
-import { postMfaVerify, ZordrApiError } from '@/lib/api/client'
+import { getAuthApi } from '../api'
+import { ZordrApiError } from '@/lib/api/client'
+import type { LoginFormValues } from '../schemas'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { cn } from '@/lib/utils'
 
 interface MfaStepProps {
-  challengeId: string
+  credentials: LoginFormValues
   onBack: () => void
 }
 
-export function MfaStep({ challengeId, onBack }: MfaStepProps) {
+export function MfaStep({ credentials, onBack }: MfaStepProps) {
   const router = useRouter()
 
   const {
@@ -32,7 +34,7 @@ export function MfaStep({ challengeId, onBack }: MfaStepProps) {
 
   const { mutate, isPending, isError, error, status } = useMutation({
     mutationFn: (data: MfaFormValues) =>
-      postMfaVerify({ challengeId, code: data.code }),
+      getAuthApi().login({ ...credentials, mfaCode: data.code }),
     onSuccess: () => {
       router.replace('/dashboard')
     },

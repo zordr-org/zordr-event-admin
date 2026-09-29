@@ -6,7 +6,8 @@ import { canDo } from '@/lib/permissions'
 import { SessionProvider, useSession } from '@/providers/SessionProvider'
 import { Sidebar } from '@/components/shell/Sidebar'
 import type { AdminUser } from '@/types/auth'
-import * as apiClient from '@/lib/api/client'
+import { ZordrApiError } from '@/lib/api/client'
+import * as authApiModule from '@/features/auth/api'
 
 // ── Mocks ──────────────────────────────────────────────────────────────────────
 vi.mock('next/navigation', () => ({
@@ -47,7 +48,8 @@ function makeClient() {
 }
 
 function renderWithSession(user: AdminUser, ui: React.ReactElement) {
-  vi.spyOn(apiClient, 'getMe').mockResolvedValue(user)
+  const mockMe = vi.fn().mockResolvedValue(user)
+  vi.spyOn(authApiModule, 'getAuthApi').mockReturnValue({ me: mockMe } as any)
   const client = makeClient()
   return render(
     <QueryClientProvider client={client}>
@@ -122,9 +124,10 @@ describe('401 from getMe redirects to login', () => {
     // The QueryProvider global error handler does window.location.href = /login
     // In JSDOM, window.location.href is read-only by default; just verify the
     // ZordrApiError propagates and canDo returns false (session is null).
-    vi.spyOn(apiClient, 'getMe').mockRejectedValue(
-      new apiClient.ZordrApiError({ status: 401, code: 'UNAUTHORIZED', message: 'Not authenticated' }),
+    const mockMe = vi.fn().mockRejectedValue(
+      new ZordrApiError({ status: 401, code: 'UNAUTHORIZED', message: 'Not authenticated' }),
     )
+    vi.spyOn(authApiModule, 'getAuthApi').mockReturnValue({ me: mockMe } as any)
 
     // Render a consumer of useSession and verify user is null on 401
     function Consumer() {

@@ -7,7 +7,8 @@ import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import { Eye, EyeOff, Mail, Lock, ArrowRight, Loader2, ShieldAlert, AlertCircle, WifiOff } from 'lucide-react'
 import { loginSchema, type LoginFormValues } from '../schemas'
-import { postLogin, ZordrApiError } from '@/lib/api/client'
+import { getAuthApi } from '../api'
+import { ZordrApiError } from '@/lib/api/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -40,7 +41,7 @@ export function LoginForm() {
   const router = useRouter()
   const [showPassword, setShowPassword] = useState(false)
   const [apiError, setApiError] = useState<ApiErrorState>(null)
-  const [mfaChallengeId, setMfaChallengeId] = useState<string | null>(null)
+  const [credentials, setCredentials] = useState<LoginFormValues | null>(null)
   const [retrySeconds, setRetrySeconds] = useState(0)
 
   const {
@@ -65,11 +66,11 @@ export function LoginForm() {
   }, [])
 
   const { mutate, isPending } = useMutation({
-    mutationFn: (data: LoginFormValues) => postLogin(data),
-    onSuccess: (res) => {
+    mutationFn: (data: LoginFormValues) => getAuthApi().login(data),
+    onSuccess: (res, variables) => {
       setApiError(null)
       if (res.mfaRequired) {
-        setMfaChallengeId(res.challengeId)
+        setCredentials(variables)
       } else {
         router.replace('/dashboard')
       }
@@ -100,8 +101,8 @@ export function LoginForm() {
     mutate(data)
   }
 
-  if (mfaChallengeId) {
-    return <MfaStep challengeId={mfaChallengeId} onBack={() => setMfaChallengeId(null)} />
+  if (credentials) {
+    return <MfaStep credentials={credentials} onBack={() => setCredentials(null)} />
   }
 
   return (

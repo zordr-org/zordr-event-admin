@@ -3,7 +3,8 @@ import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { LoginForm } from '@/features/auth/components/LoginForm'
-import * as apiClient from '@/lib/api/client'
+import * as authApiModule from '@/features/auth/api'
+import { ZordrApiError } from '@/lib/api/client'
 
 // ── Mock next/navigation ───────────────────────────────────────────────────────
 const mockReplace = vi.fn()
@@ -70,7 +71,8 @@ describe('LoginForm', () => {
 
   describe('Success flow', () => {
     it('redirects to /dashboard on successful login', async () => {
-      vi.spyOn(apiClient, 'postLogin').mockResolvedValueOnce({ mfaRequired: false })
+      const mockLogin = vi.fn().mockResolvedValueOnce({ mfaRequired: false })
+      vi.spyOn(authApiModule, 'getAuthApi').mockReturnValue({ login: mockLogin } as any)
       renderLoginForm()
       await fillAndSubmit('admin@zordr.com', 'Test@1234')
       await waitFor(() => expect(mockReplace).toHaveBeenCalledWith('/dashboard'))
@@ -79,23 +81,25 @@ describe('LoginForm', () => {
 
   describe('Error states', () => {
     it('shows generic error message on 401', async () => {
-      vi.spyOn(apiClient, 'postLogin').mockRejectedValueOnce(
-        new apiClient.ZordrApiError({ status: 401, code: 'INVALID_CREDENTIALS', message: 'Invalid email or password' }),
+      const mockLogin = vi.fn().mockRejectedValueOnce(
+        new ZordrApiError({ status: 401, code: 'INVALID_CREDENTIALS', message: 'Invalid email or password' }),
       )
+      vi.spyOn(authApiModule, 'getAuthApi').mockReturnValue({ login: mockLogin } as any)
       renderLoginForm()
       await fillAndSubmit('wrong@example.com', 'WrongPass1')
       expect(await screen.findByRole('alert')).toHaveTextContent(/invalid email or password/i)
     })
 
     it('shows locked state and disables form on 423', async () => {
-      vi.spyOn(apiClient, 'postLogin').mockRejectedValueOnce(
-        new apiClient.ZordrApiError({
+      const mockLogin = vi.fn().mockRejectedValueOnce(
+        new ZordrApiError({
           status: 423,
           code: 'ACCOUNT_LOCKED',
           message: 'Account locked',
           retryAfter: 30,
         }),
       )
+      vi.spyOn(authApiModule, 'getAuthApi').mockReturnValue({ login: mockLogin } as any)
       renderLoginForm()
       await fillAndSubmit('locked@zordr.com', 'Test@1234')
       expect(await screen.findByRole('alert')).toHaveTextContent(/account temporarily locked/i)
@@ -106,9 +110,10 @@ describe('LoginForm', () => {
     })
 
     it('shows network error on status 0', async () => {
-      vi.spyOn(apiClient, 'postLogin').mockRejectedValueOnce(
-        new apiClient.ZordrApiError({ status: 0, code: 'NETWORK_ERROR', message: 'Network error' }),
+      const mockLogin = vi.fn().mockRejectedValueOnce(
+        new ZordrApiError({ status: 0, code: 'NETWORK_ERROR', message: 'Network error' }),
       )
+      vi.spyOn(authApiModule, 'getAuthApi').mockReturnValue({ login: mockLogin } as any)
       renderLoginForm()
       await fillAndSubmit('admin@zordr.com', 'Test@1234')
       expect(await screen.findByRole('alert')).toHaveTextContent(/unable to reach/i)
@@ -117,10 +122,8 @@ describe('LoginForm', () => {
 
   describe('MFA flow', () => {
     it('renders MFA step when mfaRequired is true', async () => {
-      vi.spyOn(apiClient, 'postLogin').mockResolvedValueOnce({
-        mfaRequired: true,
-        challengeId: 'test-challenge',
-      })
+      const mockLogin = vi.fn().mockResolvedValueOnce({ mfaRequired: true })
+      vi.spyOn(authApiModule, 'getAuthApi').mockReturnValue({ login: mockLogin } as any)
       renderLoginForm()
       await fillAndSubmit('mfa@zordr.com', 'Test@1234')
       expect(await screen.findByText(/two-factor verification/i)).toBeInTheDocument()

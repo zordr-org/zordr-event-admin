@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Bell, ChevronDown, LogOut, Search, User } from 'lucide-react'
 import { useSession } from '@/providers/SessionProvider'
-import { postLogout } from '@/lib/api/client'
+import { getAuthApi } from '@/features/auth/api'
 import { CommandPalette } from './CommandPalette'
 import {
   DropdownMenu,
@@ -52,7 +52,7 @@ export function Topbar() {
   }, [])
 
   const { mutate: logout, isPending: isLoggingOut } = useMutation({
-    mutationFn: postLogout,
+    mutationFn: () => getAuthApi().logout(),
     onSuccess: () => {
       queryClient.clear()
       router.replace('/login')

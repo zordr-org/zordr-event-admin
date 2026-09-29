@@ -2,7 +2,7 @@
 
 import { createContext, useContext } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { getMe } from '@/lib/api/client'
+import { getAuthApi } from '@/features/auth/api'
 import { canDo } from '@/lib/permissions'
 import type { AdminUser, Module, Action } from '@/types/auth'
 
@@ -21,7 +21,7 @@ const SessionContext = createContext<SessionContextValue>({
 export function SessionProvider({ children }: { children: React.ReactNode }) {
   const { data: user, isLoading } = useQuery({
     queryKey: ['me'],
-    queryFn: getMe,
+    queryFn: () => getAuthApi().me(),
     retry: false,
     staleTime: 5 * 60 * 1000,
   })
