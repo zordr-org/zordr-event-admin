@@ -1,5 +1,10 @@
 import { OrganizersList } from '@/features/organizers/components/OrganizersList'
+import { Can } from '@/components/shell/Can'
 
 export default function OrganizersPage() {
-  return <OrganizersList />
+  return (
+    <Can module="organizers" action="view">
+      <OrganizersList />
+    </Can>
+  )
 }

@@ -8,8 +8,12 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     setupFiles: ['./src/__tests__/setup.ts'],
+    env: {
+      NEXT_PUBLIC_USE_MOCK_API: 'true',
+    },
   },
   resolve: {
     alias: { '@': path.resolve(__dirname, './src') },
   },
 })
+

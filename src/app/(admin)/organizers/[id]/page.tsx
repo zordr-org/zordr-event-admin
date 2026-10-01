@@ -1,4 +1,5 @@
 import { OrganizerDetailView } from '@/features/organizers/components/OrganizerDetailView'
+import { Can } from '@/components/shell/Can'
 
 interface PageProps {
   params: {
@@ -7,5 +8,9 @@ interface PageProps {
 }
 
 export default function OrganizerDetailPage({ params }: PageProps) {
-  return <OrganizerDetailView id={params.id} />
+  return (
+    <Can module="organizers" action="view">
+      <OrganizerDetailView id={params.id} />
+    </Can>
+  )
 }

@@ -136,9 +136,9 @@ let mockDetailStore: Record<string, OrganizerDetail> = mockOrganizersList.reduce
   return acc
 }, {} as Record<string, OrganizerDetail>)
 
-class MockOrganizersApi implements OrganizersApi {
+export class MockOrganizersApi implements OrganizersApi {
   async getOrganizers(filters: OrganizerFilters): Promise<OrganizersResponse> {
-    await new Promise(r => setTimeout(r, 600))
+    await new Promise(r => setTimeout(r, 10))
     let filtered = [...mockOrganizersList]
     
     if (filters.q) {
@@ -173,7 +173,7 @@ class MockOrganizersApi implements OrganizersApi {
   }
 
   async getOrganizerKpis(): Promise<OrganizerKpi> {
-    await new Promise(r => setTimeout(r, 400))
+    await new Promise(r => setTimeout(r, 10))
     return {
       total: mockOrganizersList.length,
       approved: mockOrganizersList.filter(o => o.status === 'approved').length,
@@ -184,14 +184,14 @@ class MockOrganizersApi implements OrganizersApi {
   }
 
   async getOrganizer(id: string): Promise<OrganizerDetailResponse> {
-    await new Promise(r => setTimeout(r, 500))
+    await new Promise(r => setTimeout(r, 10))
     const org = mockDetailStore[id]
     if (!org) throw new Error('Not found')
     return { success: true, data: { organizer: org } }
   }
 
   async approveOrganizer(id: string): Promise<void> {
-    await new Promise(r => setTimeout(r, 400))
+    await new Promise(r => setTimeout(r, 10))
     if (mockDetailStore[id]) {
       mockDetailStore[id].status = 'approved'
       mockDetailStore[id].kycStatus = 'verified'
@@ -201,7 +201,7 @@ class MockOrganizersApi implements OrganizersApi {
   }
 
   async rejectOrganizer(id: string, data: RejectOrganizerFormValues): Promise<void> {
-    await new Promise(r => setTimeout(r, 400))
+    await new Promise(r => setTimeout(r, 10))
     if (mockDetailStore[id]) {
       mockDetailStore[id].status = 'rejected'
       mockDetailStore[id].kycStatus = 'rejected'
@@ -211,7 +211,7 @@ class MockOrganizersApi implements OrganizersApi {
   }
 
   async suspendOrganizer(id: string, data: SuspendOrganizerFormValues): Promise<void> {
-    await new Promise(r => setTimeout(r, 400))
+    await new Promise(r => setTimeout(r, 10))
     if (mockDetailStore[id]) {
       mockDetailStore[id].status = 'suspended'
       const listOrg = mockOrganizersList.find(o => o.id === id)
@@ -220,7 +220,7 @@ class MockOrganizersApi implements OrganizersApi {
   }
 
   async addNote(id: string, data: AddNoteFormValues): Promise<OrganizerNote> {
-    await new Promise(r => setTimeout(r, 400))
+    await new Promise(r => setTimeout(r, 10))
     const newNote: OrganizerNote = {
       id: crypto.randomUUID(),
       authorId: 'u1',

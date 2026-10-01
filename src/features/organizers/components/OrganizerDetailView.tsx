@@ -10,7 +10,7 @@ import { EmptyState } from '@/components/shell/EmptyState'
 import { useOrganizer, useOrganizerActions } from '../hooks'
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog'
 import { getAvailableActions } from '../lib/status'
-import { Can } from '@/providers/SessionProvider'
+import { Can } from '@/components/shell/Can'
 
 import { OrganizerOverviewTab } from './OrganizerOverviewTab'
 import { OrganizerDocumentsTab } from './OrganizerDocumentsTab'

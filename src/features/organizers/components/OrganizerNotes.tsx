@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { addNoteSchema } from '../schemas'
 import type { AddNoteFormValues, OrganizerNote } from '../types'
 import { useAddNote } from '../hooks'
-import { Can } from '@/providers/SessionProvider'
+import { Can } from '@/components/shell/Can'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { cn } from '@/lib/utils'
 
