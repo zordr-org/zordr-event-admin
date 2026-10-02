@@ -44,7 +44,7 @@ export function DataTable<T extends { id: string | number }>({
   }
 
   return (
-    <div className={cn("rounded-md border bg-card", className)}>
+    <div className={cn("rounded-md border bg-card overflow-x-auto", className)}>
       <Table>
         <TableHeader>
           <TableRow className="hover:bg-transparent">
@@ -77,7 +77,7 @@ export function DataTable<T extends { id: string | number }>({
               <TableRow key={row.id}>
                 {columns.map((col, i) => (
                   <TableCell key={i} className={col.className}>
-                    {col.cell ? col.cell(row) : (row as any)[col.accessorKey as string]}
+                    {col.cell ? col.cell(row) : String(row[col.accessorKey as keyof T] ?? '')}
                   </TableCell>
                 ))}
               </TableRow>

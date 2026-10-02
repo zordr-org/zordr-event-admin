@@ -33,7 +33,7 @@ class HttpOrganizersApi implements OrganizersApi {
     if (filters.kyc) params.set('kycStatus', filters.kyc)
     if (filters.city) params.set('city', filters.city)
     
-    const res = await apiFetch<unknown>(`/api/v1/admin/organizers?${params.toString()}`)
+    const res = await apiFetch<unknown>(`/api/admin/organizers?${params.toString()}`)
     return organizersResponseSchema.parse(res)
   }
 
@@ -41,34 +41,34 @@ class HttpOrganizersApi implements OrganizersApi {
     // The API contract doesn't have a dedicated KPI endpoint for admin/organizers,
     // so we might need to fetch it from analytics or a summary endpoint.
     // For now, let's assume it exists or use a mock fallback if omitted.
-    return apiFetch<OrganizerKpi>('/api/v1/admin/organizers/kpis')
+    return apiFetch<OrganizerKpi>('/api/admin/organizers/kpis')
   }
 
   async getOrganizer(id: string): Promise<OrganizerDetailResponse> {
-    const res = await apiFetch<unknown>(`/api/v1/admin/organizers/${id}`)
+    const res = await apiFetch<unknown>(`/api/admin/organizers/${id}`)
     return organizerDetailResponseSchema.parse({ success: true, data: { organizer: res } })
   }
 
   async approveOrganizer(id: string): Promise<void> {
-    await apiFetch(`/api/v1/admin/organizers/${id}/approve`, { method: 'POST' })
+    await apiFetch(`/api/admin/organizers/${id}/approve`, { method: 'POST' })
   }
 
   async rejectOrganizer(id: string, data: RejectOrganizerFormValues): Promise<void> {
-    await apiFetch(`/api/v1/admin/organizers/${id}/reject`, { 
+    await apiFetch(`/api/admin/organizers/${id}/reject`, { 
       method: 'POST',
       body: JSON.stringify(data)
     })
   }
 
   async suspendOrganizer(id: string, data: SuspendOrganizerFormValues): Promise<void> {
-    await apiFetch(`/api/v1/admin/organizers/${id}/suspend`, { 
+    await apiFetch(`/api/admin/organizers/${id}/suspend`, { 
       method: 'POST',
       body: JSON.stringify(data)
     })
   }
 
   async addNote(id: string, data: AddNoteFormValues): Promise<OrganizerNote> {
-    const res = await apiFetch<OrganizerNote>(`/api/v1/admin/organizers/${id}/notes`, {
+    const res = await apiFetch<OrganizerNote>(`/api/admin/organizers/${id}/notes`, {
       method: 'POST',
       body: JSON.stringify(data)
     })
@@ -81,7 +81,7 @@ const CITIES = ['Hyderabad', 'Bangalore', 'Mumbai', 'Delhi', 'Chennai', 'Pune']
 const STATUSES = ['approved', 'pending', 'rejected', 'suspended'] as const
 const KYC_STATUSES = ['verified', 'pending', 'not_submitted', 'rejected'] as const
 
-const mockOrganizersList: OrganizerList[] = Array.from({ length: 48 }).map((_, i) => {
+export const mockOrganizersList: OrganizerList[] = Array.from({ length: 48 }).map((_, i) => {
   const isPending = i % 5 === 0
   const isRejected = i % 20 === 0
   const isSuspended = i % 25 === 0
@@ -104,7 +104,7 @@ const mockOrganizersList: OrganizerList[] = Array.from({ length: 48 }).map((_, i
   }
 })
 
-let mockDetailStore: Record<string, OrganizerDetail> = mockOrganizersList.reduce((acc, org) => {
+export let mockDetailStore: Record<string, OrganizerDetail> = mockOrganizersList.reduce((acc, org) => {
   acc[org.id] = {
     ...org,
     contact: {

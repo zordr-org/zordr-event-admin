@@ -96,7 +96,8 @@ Available roles:
 ## Scripts
 
 ```bash
-npm run dev        # Start development server on http://localhost:3000
+npm run dev        # Start development server using Turbopack on http://localhost:3000
+npm run dev:webpack # Start development server using Webpack
 npm run build      # Production build
 npm run start      # Start production server (requires build first)
 npm run lint       # Run ESLint
@@ -120,11 +121,11 @@ src/
       dashboard/
         page.tsx         Dashboard page
       organizers/
-        page.tsx         Organizers placeholder
+        page.tsx         Organizers module
       events/
-        page.tsx         Events placeholder
+        page.tsx         Events module
       orders/
-        page.tsx         Orders placeholder
+        page.tsx         Orders module
       customers/
         page.tsx         Customers placeholder
       settlements/

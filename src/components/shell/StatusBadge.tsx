@@ -9,6 +9,7 @@ const STATUS_MAP: Record<string, string> = {
   rejected:   'bg-red-100 text-red-700',
   cancelled:  'bg-red-100 text-red-700',
   blocked:    'bg-red-100 text-red-700',
+  suspended:  'bg-red-100 text-red-700',
   // Order / Payment statuses
   completed:  'bg-emerald-100 text-emerald-700',
   failed:     'bg-red-100 text-red-700',
@@ -43,6 +44,8 @@ interface StatusBadgeProps {
 export function StatusBadge({ status, className }: StatusBadgeProps) {
   const key = status.toLowerCase()
   const colors = STATUS_MAP[key] ?? 'bg-gray-100 text-gray-600'
+  const displayStatus = key === 'suspended' ? 'Blocked' : status
+  
   return (
     <span
       className={cn(
@@ -51,7 +54,7 @@ export function StatusBadge({ status, className }: StatusBadgeProps) {
         className,
       )}
     >
-      {status}
+      {displayStatus}
     </span>
   )
 }

@@ -78,14 +78,14 @@ export function OrganizerDetailView({ id }: { id: string }) {
           <p className="text-muted-foreground mt-1">View organizer information, documents, events, revenue and more.</p>
         </div>
         <div className="flex items-center gap-3">
-          <StatusBadge status={org.status === 'suspended' ? 'Blocked' : org.status} />
+          <StatusBadge status={org.status} />
           {org.joinedOn && (
             <span className="text-sm text-muted-foreground">
               Active since {new Date(org.joinedOn).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
             </span>
           )}
           
-          <Can module="Organizers" action="edit">
+          <Can module="organizers" action="edit">
             <Button variant="outline" disabled title="Reset Password endpoint not yet implemented">
               Reset Password
             </Button>
@@ -154,7 +154,7 @@ export function OrganizerDetailView({ id }: { id: string }) {
           <div className="rounded-xl border bg-card text-card-foreground shadow-sm p-6 space-y-4">
             <h3 className="font-semibold leading-none tracking-tight">Actions</h3>
             
-            <Can module="Organizers" action="edit">
+            <Can module="organizers" action="edit">
               <Button className="w-full justify-start" disabled title="Update Organizer endpoint not yet implemented">
                 <Edit className="w-4 h-4 mr-2" /> Update Organizer
               </Button>

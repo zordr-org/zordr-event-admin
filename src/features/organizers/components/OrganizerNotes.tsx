@@ -35,7 +35,7 @@ export function OrganizerNotes({ organizerId, notes }: { organizerId: string, no
         <p className="text-sm text-muted-foreground mt-1.5">Internal notes about this organizer.</p>
       </div>
 
-      <Can module="Organizers" action="edit">
+      <Can module="organizers" action="edit">
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3 shrink-0">
           <div>
             <textarea

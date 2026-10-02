@@ -100,7 +100,7 @@ const CHECKLIST_LABELS: Record<string, string> = {
 
 function defaultChecklist(allGood = false): ChecklistItem[] {
   return Object.keys(CHECKLIST_LABELS).map((key) => ({
-    key: key as any,
+    key: key as import('./types').ChecklistKey,
     label: CHECKLIST_LABELS[key],
     status: allGood ? 'looks_good' : 'pending',
   }))
@@ -108,10 +108,10 @@ function defaultChecklist(allGood = false): ChecklistItem[] {
 
 function partialChecklist(goodKeys: string[]): ChecklistItem[] {
   return Object.keys(CHECKLIST_LABELS).map((key) => ({
-    key: key as any,
+    key: key as import('./types').ChecklistKey,
     label: CHECKLIST_LABELS[key],
     status: goodKeys.includes(key) ? 'looks_good' : 'pending',
-  })) as ChecklistItem[]
+  }))
 }
 
 function makeEvent(overrides: Partial<EventListItem> & { id: string }): EventListItem {

@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server'
 import { NextRequest } from 'next/server'
-import { mockDetailStore } from '../route'
-
+import { mockDetailStore } from '@/features/organizers/api'
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   const organizer = mockDetailStore[params.id]
   

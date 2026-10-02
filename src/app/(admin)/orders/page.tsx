@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
-import { PageHeader } from '@/components/shell/PageHeader'
-import { EmptyState } from '@/components/shell/EmptyState'
+import { OrdersList } from '@/features/orders/components/OrdersList'
+import { Can } from '@/components/shell/Can'
 
 export const metadata: Metadata = {
   title: 'Orders | Zordr Admin Portal',
@@ -9,14 +9,8 @@ export const metadata: Metadata = {
 
 export default function OrdersPage() {
   return (
-    <div className="p-6 lg:p-8">
-      <PageHeader
-        title="Orders"
-        subtitle="Every ticket order across all organizers and events."
-      />
-      <div className="mt-12">
-        <EmptyState message="Orders screen is coming in the next sprint." />
-      </div>
-    </div>
+    <Can module="orders" action="view">
+      <OrdersList />
+    </Can>
   )
 }

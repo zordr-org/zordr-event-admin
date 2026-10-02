@@ -114,7 +114,7 @@ export function OrganizersList() {
     },
     {
       header: 'Status',
-      cell: (row) => <StatusBadge status={row.status === 'suspended' ? 'Blocked' : row.status} />
+      cell: (row) => <StatusBadge status={row.status} />
     },
     {
       header: 'Joined On',
