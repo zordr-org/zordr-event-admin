@@ -16,6 +16,8 @@ Status: Complete and tested
 - **Organizers Module**: Implemented list view, detail view, suspension/rejection flows, and centralized mock API (`src/features/organizers/api.ts`).
 - **Events Module**: Implemented review checklists, approval/rejection flows, KPI strips, and fully parameterized mock data.
 - **Orders Module**: Implemented bulk actions (Refunds, Exports), bulk selections, and robust UI feedback mechanisms.
+- **Customers Module**: Implemented list view, block/unblock actions with required reasons, and fixed routing loops.
+- **Settlements Module**: Implemented list view, hold actions with required reasons, mark paid functionality, and settlement generation logic. Includes KPI strips and comprehensive test coverage.
 - **Comprehensive Audit**: Executed a full codebase audit enforcing strict typing, `SOLID` principles, route handler correctness (moved from `v1/admin` to `admin`), Turbopack integration for development (`dev` script), fixing broken ARIA labels in tests, and resolving exhaustive-deps. All tests now pass cleanly with a 0-error build.
 
 ### Nav Config
@@ -72,4 +74,4 @@ Status: Complete and tested
 
 ## Next Steps
 
-With the shell, Organizers, Events, and Orders modules in place, the next phase is to build the actual content for the remaining modules, starting with the **Dashboard**, **Customers**, and **Settlements** modules. Ensure you continue leveraging the established SOLID architecture and shared components like `PageHeader`, `KpiCard`, and `DataTable`.
+With the shell, Organizers, Events, Orders, Customers, and Settlements modules in place, the next phase is to build the actual content for the remaining modules, starting with the **Dashboard**, **Refunds**, and **Support** modules. Ensure you continue leveraging the established SOLID architecture and shared components like `PageHeader`, `KpiCard`, and `DataTable`.
