@@ -59,6 +59,10 @@ class MockAuthApi implements AuthApi {
       throw new ZordrApiError({ status: 401, code: 'INVALID_MFA_CODE', message: 'Invalid verification code' })
     }
     
+    if (typeof document !== 'undefined') {
+      document.cookie = 'zordr_admin_session=mock-session-token; path=/; max-age=86400'
+    }
+
     return {
       mfaRequired: false,
       user: { id: 'u1', name: 'Admin', email, role: 'Super Admin' },
@@ -93,6 +97,9 @@ class MockAuthApi implements AuthApi {
 
   async logout(): Promise<void> {
     await new Promise(r => setTimeout(r, 100))
+    if (typeof document !== 'undefined') {
+      document.cookie = 'zordr_admin_session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'
+    }
   }
 }
 

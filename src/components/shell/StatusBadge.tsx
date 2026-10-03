@@ -17,6 +17,7 @@ const STATUS_MAP: Record<string, string> = {
   // Settlement statuses
   paid:       'bg-emerald-100 text-emerald-700',
   'on hold':  'bg-amber-100 text-amber-700',
+  on_hold:    'bg-amber-100 text-amber-700',
   // Support statuses
   open:       'bg-blue-100 text-blue-700',
   resolved:   'bg-emerald-100 text-emerald-700',
@@ -44,7 +45,7 @@ interface StatusBadgeProps {
 export function StatusBadge({ status, className }: StatusBadgeProps) {
   const key = status.toLowerCase()
   const colors = STATUS_MAP[key] ?? 'bg-gray-100 text-gray-600'
-  const displayStatus = key === 'suspended' ? 'Blocked' : status
+  const displayStatus = key === 'suspended' ? 'Blocked' : status.replace(/_/g, ' ')
   
   return (
     <span

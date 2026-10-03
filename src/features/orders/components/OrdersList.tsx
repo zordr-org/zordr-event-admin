@@ -49,10 +49,10 @@ export function OrdersList() {
   const [selectedIds, setSelectedIds] = React.useState<Set<string>>(new Set())
   const [refundDialogOpen, setRefundDialogOpen] = React.useState(false)
 
-  // Clear selections when page/data changes
+  // Clear selections when filters change
   React.useEffect(() => {
     setSelectedIds(new Set())
-  }, [listData?.data.orders])
+  }, [filters])
 
   const kpiItems: KpiItem[] = React.useMemo(() => [
     { id: 'total', label: 'Total Orders', value: kpis?.totalOrders ?? 0, icon: <CreditCard className="w-5 h-5 text-blue-600" /> },
@@ -205,7 +205,7 @@ export function OrdersList() {
         </span>
       ),
     }
-  ], [selectedIds, listData, allSelected, isIndeterminate, toggleAll, toggleOne])
+  ], [selectedIds, allSelected, isIndeterminate, toggleAll, toggleOne])
 
   return (
     <div className="p-6 lg:p-8 space-y-6">

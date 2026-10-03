@@ -1,22 +1,16 @@
-import type { Metadata } from 'next'
-import { PageHeader } from '@/components/shell/PageHeader'
-import { EmptyState } from '@/components/shell/EmptyState'
+import { Metadata } from 'next'
+import { SettlementsList } from '@/features/settlements/components/SettlementsList'
+import { Can } from '@/components/shell/Can'
 
 export const metadata: Metadata = {
-  title: 'Settlements | Zordr Admin Portal',
-  robots: { index: false, follow: false },
+  title: 'Settlements | Zordr Admin',
+  description: 'Manage organizer payouts, platform fees, and view transfer status.',
 }
 
 export default function SettlementsPage() {
   return (
-    <div className="p-6 lg:p-8">
-      <PageHeader
-        title="Settlements"
-        subtitle="Platform-wide payout ledger, fee breakdown, and status."
-      />
-      <div className="mt-12">
-        <EmptyState message="Settlements screen is coming in the next sprint." />
-      </div>
-    </div>
+    <Can module="settlements" action="view">
+      <SettlementsList />
+    </Can>
   )
 }
