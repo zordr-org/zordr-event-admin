@@ -14,6 +14,7 @@ const STATUS_MAP: Record<string, string> = {
   completed:  'bg-emerald-100 text-emerald-700',
   failed:     'bg-red-100 text-red-700',
   refunded:   'bg-purple-100 text-purple-700',
+  processed:  'bg-emerald-100 text-emerald-700',
   // Settlement statuses
   paid:       'bg-emerald-100 text-emerald-700',
   'on hold':  'bg-amber-100 text-amber-700',

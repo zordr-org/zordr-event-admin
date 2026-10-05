@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import { PageHeader } from '@/components/shell/PageHeader'
+import { SupportList } from '@/features/support'
+import { Can } from '@/components/shell/Can'
 import { EmptyState } from '@/components/shell/EmptyState'
 
 export const metadata: Metadata = {
@@ -14,8 +16,14 @@ export default function SupportPage() {
         title="Support"
         subtitle="Cross-platform ticketing for organizer and customer issues."
       />
-      <div className="mt-12">
-        <EmptyState message="Support screen is coming in the next sprint." />
+      <div className="mt-8">
+        <Can 
+          module="support" 
+          action="view" 
+          fallback={<EmptyState message="You do not have permission to view support tickets." />}
+        >
+          <SupportList />
+        </Can>
       </div>
     </div>
   )

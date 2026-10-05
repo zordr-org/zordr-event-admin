@@ -131,7 +131,7 @@ src/
       settlements/
         page.tsx         Settlements placeholder
       refunds/
-        page.tsx         Refunds placeholder
+        page.tsx         Refunds module
       support/
         page.tsx         Support placeholder
       analytics/
@@ -248,11 +248,8 @@ Border radius base: 8px. Card: 12px (rounded-xl). Button: 8px (rounded-lg).
 npm test
 ```
 
-Output should show 10 passing tests across:
-- Validation (email required, email format, password required, password min-length)
-- Success flow (redirect to /dashboard)
-- 401 error (generic message, no field reveal)
-- 423 locked (banner shown, form disabled)
-- Network error (status 0)
-- MFA flow (MFA step renders on mfaRequired response)
-- Accessibility (show/hide toggle aria-pressed state)
+Output should show passing tests across the various modules:
+- Auth & Login (Validation, MFA, error states)
+- Shell & Layout
+- Dashboard & Analytics
+- Events, Organizers, Orders, Settlements, Customers, Refunds, Support

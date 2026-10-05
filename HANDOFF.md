@@ -18,6 +18,9 @@ Status: Complete and tested
 - **Orders Module**: Implemented bulk actions (Refunds, Exports), bulk selections, and robust UI feedback mechanisms.
 - **Customers Module**: Implemented list view, block/unblock actions with required reasons, and fixed routing loops.
 - **Settlements Module**: Implemented list view, hold actions with required reasons, mark paid functionality, and settlement generation logic. Includes KPI strips and comprehensive test coverage.
+- **Refunds Module**: Implemented list view and review flow (Approve/Reject). Added cross-module logic to adjust pending settlements upon refund approval. Includes comprehensive UI and Server-side tests.
+- **Support Module**: Implemented list view, ticket thread detail drawer, mock API for thread parsing, and role-based action gating (resolving/replying). Includes a fully functional thread interaction flow.
+- **Analytics Module**: Built platform-wide KPI dashboard with time-series trend charts, breakdown donuts, and leaderboards. Implemented robust per-widget loading and error handling, along with PDF/CSV export functionality.
 - **Comprehensive Audit**: Executed a full codebase audit enforcing strict typing, `SOLID` principles, route handler correctness (moved from `v1/admin` to `admin`), Turbopack integration for development (`dev` script), fixing broken ARIA labels in tests, and resolving exhaustive-deps. All tests now pass cleanly with a 0-error build.
 
 ### Nav Config
@@ -60,6 +63,18 @@ Status: Complete and tested
 1. The design for the Organizer Detail screen includes an "Update Organizer" button, but `docs/api_contract.pdf` (and `.txt`) does **not** define an endpoint for updating an organizer from the Admin panel (only the Organizer Portal has `PUT /api/v1/organizer/profile`). I have listed this under Open Questions and will render the button disabled with a tooltip until backend support is added.
 2. The spec mentions a bank detail "reveal" functionality that is audit-logged, however, there is **no dedicated reveal API endpoint** listed in the contract. I have left the bank details tab utilizing the existing data and will add this functionality once the backend specifies the endpoint.
 
+**Support Module Gaps**:
+1. **Missing Admin GET Ticket Thread Endpoint**: No `GET /api/v1/admin/support/{id}` or thread endpoint exists in the contract. We use a mock adapter in `src/features/support/api.ts` `getTicketThread` until backend resolves this.
+2. **No assign-to-agent endpoint**: Agents cannot claim or be assigned tickets.
+3. **No priority update endpoint**: Support tickets cannot have their priority changed by an admin.
+4. **No internal-notes endpoint**: Only public messages are supported; internal team notes cannot be attached to a ticket.
+5. **Field-level scoping of requester PII**: PII exposure for requesters across roles is not specified (e.g. should marketing_exec see less PII when looking at support tickets?).
+
+**Analytics Module Gaps**:
+1. **No Comparison Metrics**: The `overview` endpoint currently provides no delta/comparison versus the previous period, preventing the display of growth trends on the KPI cards.
+2. **Parallel Trends Calls**: The `trends` endpoint only accepts one metric per call, requiring 3 parallel calls from the dashboard. Consider adding a batch option to the backend for efficiency.
+3. **Field-level scoping**: Roles like `marketing_exec` shouldn't see GMV or settlement breakdowns, but the backend must enforce this at the endpoint level to avoid exposing financial data.
+
 ---
 
 ## Files Modified/Created
@@ -74,4 +89,4 @@ Status: Complete and tested
 
 ## Next Steps
 
-With the shell, Organizers, Events, Orders, Customers, and Settlements modules in place, the next phase is to build the actual content for the remaining modules, starting with the **Dashboard**, **Refunds**, and **Support** modules. Ensure you continue leveraging the established SOLID architecture and shared components like `PageHeader`, `KpiCard`, and `DataTable`.
+With the shell, Organizers, Events, Orders, Customers, Settlements, Refunds, Support, and Analytics modules in place, the next phase is to build the actual content for the remaining placeholder modules, starting with the **Employees**, **Roles**, and **Settings** modules. Ensure you continue leveraging the established SOLID architecture and shared components like `PageHeader`, `KpiCard`, and `DataTable`.
