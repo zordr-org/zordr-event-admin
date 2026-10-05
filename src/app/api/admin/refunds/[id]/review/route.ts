@@ -3,25 +3,23 @@ import { mockRefundsList } from '@/features/refunds/mock'
 import { mockSettlementsList } from '@/features/settlements/api'
 import { reviewRefundSchema } from '@/features/refunds/schemas'
 
-export async function POST(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function POST(request: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const { id } = params
-  
+
   const body = await request.json()
   const parsed = reviewRefundSchema.safeParse(body)
   if (!parsed.success) {
     return NextResponse.json({ success: false, error: 'Invalid payload' }, { status: 400 })
   }
-  
+
   const { decision, notes } = parsed.data
-  
+
   const refund = mockRefundsList.find(r => r.id === id)
   if (!refund) {
     return NextResponse.json({ success: false, error: 'Refund not found' }, { status: 404 })
   }
-  
+
   if (refund.status !== 'pending') {
     return NextResponse.json({ success: false, error: 'Refund is already resolved' }, { status: 409 })
   }

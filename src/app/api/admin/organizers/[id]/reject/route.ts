@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { mockDetailStore, mockOrganizersList } from '@/features/organizers/api'
 
-export async function POST(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function POST(request: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const body = await request.json()
   const { reason } = body
 
@@ -23,7 +21,7 @@ export async function POST(
   const listItem = mockOrganizersList.find((o) => o.id === params.id)
   if (listItem) listItem.status = 'rejected'
   detail.status = 'rejected'
-  
+
   // Note: in a real implementation we would also append this to notes/audit log
   detail.notes.push({
     id: `note-${Date.now()}`,

@@ -35,7 +35,7 @@ function ChecklistRow({ item, eventId, isReadOnly }: ChecklistRowProps) {
   const { mutate, isPending } = useChecklistUpdate(eventId)
   const [showComment, setShowComment] = React.useState(!!item.comment)
   const [commentDraft, setCommentDraft] = React.useState(item.comment ?? '')
-  const commentTimerRef = React.useRef<ReturnType<typeof setTimeout>>()
+  const commentTimerRef = React.useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 
   const handleStatusChange = (status: ChecklistItemStatus) => {
     if (isReadOnly || status === item.status) return

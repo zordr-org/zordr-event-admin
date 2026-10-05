@@ -96,7 +96,7 @@ describe('Support UI', () => {
       expect(screen.getByText('Rocking Events')).toBeInTheDocument()
     })
 
-    const kpiValues = screen.getAllByText('1', { selector: 'div.text-2xl.font-bold' })
+    const kpiValues = screen.getAllByText('1', { selector: 'span.text-2xl.font-bold' })
     expect(kpiValues.length).toBeGreaterThanOrEqual(2)
   })
 
@@ -107,7 +107,8 @@ describe('Support UI', () => {
       expect(screen.getByText('Alice Smith')).toBeInTheDocument()
     })
     
-    await user.click(screen.getByText('Alice Smith'))
+    const viewBtns = await screen.findAllByRole('button', { name: 'View' })
+    await user.click(viewBtns[0])
 
     const dialogTitle = await screen.findByText('Ticket: Cannot access my tickets')
     expect(dialogTitle).toBeInTheDocument()

@@ -89,7 +89,7 @@ describe('Refunds Server Logic', () => {
       method: 'POST',
       body: JSON.stringify({ decision: 'approve' })
     })
-    const res = await POST(req, { params: { id: 'ref-processed' } })
+    const res = await POST(req, { params: Promise.resolve({ id: 'ref-processed' }) })
     expect(res.status).toBe(409)
   })
 
@@ -98,7 +98,7 @@ describe('Refunds Server Logic', () => {
       method: 'POST',
       body: JSON.stringify({ decision: 'approve' })
     })
-    const res = await POST(req, { params: { id: 'ref-open' } })
+    const res = await POST(req, { params: Promise.resolve({ id: 'ref-open' }) })
     expect(res.status).toBe(200)
 
     const stl = mockSettlementsList.find(s => s.id === 'stl-pending')
@@ -115,7 +115,7 @@ describe('Refunds Server Logic', () => {
       method: 'POST',
       body: JSON.stringify({ decision: 'approve' })
     })
-    const res = await POST(req, { params: { id: 'ref-closed' } })
+    const res = await POST(req, { params: Promise.resolve({ id: 'ref-closed' }) })
     expect(res.status).toBe(200)
 
     const stl = mockSettlementsList.find(s => s.id === 'stl-paid')

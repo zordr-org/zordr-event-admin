@@ -9,10 +9,8 @@ let rolesDb = [...mockRolesData]
 
 export const dynamic = 'force-dynamic'
 
-export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
 
   const { id } = params
   const role = rolesDb.find((r) => r.id === id)
@@ -30,14 +28,12 @@ export async function GET(
   })
 }
 
-export async function PUT(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
 
   const { id } = params
   const body = await request.json()
-  
+
   const roleIndex = rolesDb.findIndex((r) => r.id === id)
   if (roleIndex === -1) {
     return NextResponse.json(
@@ -58,14 +54,12 @@ export async function PUT(
   })
 }
 
-export async function DELETE(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: Request, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
 
   const { id } = params
   const roleIndex = rolesDb.findIndex((r) => r.id === id)
-  
+
   if (roleIndex === -1) {
     return NextResponse.json(
       { success: false, error: { code: 'NOT_FOUND', message: 'Role not found' } },

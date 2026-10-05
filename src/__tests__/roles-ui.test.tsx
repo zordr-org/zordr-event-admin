@@ -5,6 +5,12 @@ import { RolesList } from '@/features/roles'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { SessionProvider } from '@/providers/SessionProvider'
 
+const mockCan = vi.fn().mockReturnValue(true)
+vi.mock('@/providers/SessionProvider', () => ({
+  SessionProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  useSession: () => ({ user: null, isLoading: false, can: mockCan }),
+}))
+
 const mockRolesData = [
   {
     id: 'role-1',
@@ -52,6 +58,10 @@ function buildPermissions(canEdit: boolean) {
 }
 
 function createWrapper(canEdit = true) {
+  mockCan.mockImplementation((mod, action) => {
+    if (mod === 'roles' && action === 'create') return canEdit;
+    return true;
+  });
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false } },
   })

@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 // Name of the httpOnly session cookie set by the backend
 export const SESSION_COOKIE = 'zordr_admin_session'
 
-export function middleware(req: NextRequest) {
+export function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl
   const hasSession = req.cookies.has(SESSION_COOKIE)
 

@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { mockSupportTickets, mockMessages } from '@/features/support/mock'
 
-export async function POST(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function POST(request: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const body = await request.json().catch(() => ({}))
   const { message, status } = body
 
@@ -16,7 +14,7 @@ export async function POST(
   }
 
   const ticketIndex = mockSupportTickets.findIndex(t => t.id === params.id)
-  
+
   if (ticketIndex === -1) {
     return NextResponse.json(
       { success: false, error: { code: 'NOT_FOUND', message: 'Ticket not found' } },

@@ -5,6 +5,12 @@ import { SettingsForm } from '@/features/settings'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { SessionProvider } from '@/providers/SessionProvider'
 
+const mockCan = vi.fn().mockReturnValue(true)
+vi.mock('@/providers/SessionProvider', () => ({
+  SessionProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+  useSession: () => ({ user: null, isLoading: false, can: mockCan }),
+}))
+
 const mockSettingsData = {
   platformFeePercent: 5.0,
   convenienceFeePercent: 2.0,
@@ -46,38 +52,22 @@ function buildPermissions(canEdit: boolean) {
 }
 
 function createWrapper(canEdit = true) {
+  mockCan.mockImplementation((mod, action) => {
+    if (mod === 'settings' && action === 'edit') return canEdit;
+    return true;
+  });
+  mockCan.mockImplementation((mod, action) => {
+    if (mod === 'settings' && action === 'edit') return canEdit;
+    return true;
+  });
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false } },
-  })
-
-  const permissions = buildPermissions(canEdit)
-
-  vi.mocked(apiFetch).mockImplementation(async (url: string, options?: RequestInit) => {
-    if (url.includes('/api/v1/admin/employees/me')) {
-      return {
-        id: 'test-user',
-        name: 'Test User',
-        email: 'test@example.com',
-        roleName: 'Test',
-        department: 'Test',
-        permissions,
-      }
-    }
-    if (url.includes('/api/admin/settings')) {
-      if (options?.method === 'PATCH') {
-        return { success: true, data: { ...mockSettingsData, ...JSON.parse(options.body as string) } }
-      }
-      return { success: true, data: mockSettingsData }
-    }
-    return { success: true }
   })
 
   function Wrapper({ children }: { children: React.ReactNode }) {
     return (
       <QueryClientProvider client={queryClient}>
-        <SessionProvider>
           {children}
-        </SessionProvider>
       </QueryClientProvider>
     )
   }
