@@ -68,3 +68,35 @@ Scanned via `git grep` for `password|secret|api_key|token`. Found expected `mock
 
 ---
 *End of Phase 1 Report. Awaiting approval of findings before proceeding with Phases 3-6.*
+
+## 4. Phase 1 Extended Findings (Step B)
+
+### `npx knip` Output
+Knip reported several unused items that can be cleaned up during refactoring:
+- **Unused Files (9)**: `src/components/ui/badge.tsx`, `src/components/ui/separator.tsx`, `src/features/*/index.ts` (customers, events, orders, organizers, refunds, settlements), and `src/hooks/usePermission.ts`.
+- **Unused Dependency**: `@radix-ui/react-separator` (since `separator.tsx` is unused).
+- **Unused devDependencies**: `@vitest/coverage-v8`, `prettier`.
+- **Unused Exports (27)**: Various UI component variants/subcomponents (e.g., `DialogTrigger`, `DropdownMenuGroup`, `TableFooter`), routing/config constants (`PATH_TO_MODULE`, query keys), and some unused utility functions (`usePreview`, `isTerminalStatus`, `useExportSettlements`).
+- **Unused Exported Types (19)**: Several prop interfaces for UI components and data interfaces in feature modules.
+
+### Route-by-Route Build Output (Next 14)
+All routes successfully built. The first-load JS is well-optimized.
+- **Global First Load JS**: 87.4 kB (Shared)
+- **Static vs Dynamic**: 
+  - All `page.tsx` routes are prerendered as **Static** (○), ranging from ~3 kB to ~12 kB in individual route size.
+  - The `dashboard` and `customers` pages are slightly heavier at ~236 kB and ~137 kB total first-load JS.
+  - Most API routes and dynamic routes (e.g., `events/[id]/review`, `organizers/[id]`) are **Dynamic** (ƒ).
+  - Middleware compiled successfully to 26.7 kB.
+
+### Tracked Files that should not be tracked
+- Currently, there are no unexpected tracked files. In Step A, the `.code-workspace` file and `api_contract.txt` were removed, and the `docs/` folder was properly tracked. Tests (`page.test.tsx`) are co-located with pages, which is acceptable in the App Router if configured properly, though moving them to `src/__tests__/` would match the other test files.
+
+### Vercel Checklist Items (Pre-Upgrade Assessment)
+These items from Phase 5 are assessed on the current Next 14 build:
+1. **Edge Runtime (`middleware.ts`)**: Currently runs on the Edge runtime in Next 14. This will need to be migrated to `proxy.ts` on Node runtime in Next 16.
+2. **Cross-Domain Cookies**: The current `middleware.ts` might have issues with cross-domain cookies on Vercel depending on how subdomains are structured. This will be re-evaluated when migrating to `proxy.ts`.
+3. **Route Handler Caching**: Next 14 caches GET handlers by default unless dynamic functions are used. We will verify that mock handlers rely correctly on dynamic behavior (like `force-dynamic` which was added in Step A) because Next 15+ changes GET handlers to be dynamic by default.
+4. **Build Bundler Mismatch**: Next 14 uses Turbopack for `dev` (enabled in `package.json` with `--turbo`) but defaults to Webpack for `build`. This mismatch is largely resolved in Next 16 as Turbopack becomes the default for both.
+
+---
+*End of Step B Report. Ready for Next 16 Upgrade.*
