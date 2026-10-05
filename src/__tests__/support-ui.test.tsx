@@ -22,32 +22,34 @@ vi.mock('@/providers/SessionProvider', () => ({
   useSession: () => ({ can: () => true })
 }))
 
-const mockTicketsData = [
-  {
-    id: 'TKT-001',
-    requesterType: 'customer',
-    requesterName: 'Alice Smith',
-    subject: 'Cannot access my tickets',
-    category: 'tickets',
-    eventName: 'Summer Music Fest',
-    eventId: 'EVT-001',
-    status: 'open' as const,
-    priority: 'high' as const,
-    createdAt: '2026-10-05T10:00:00Z',
-  },
-  {
-    id: 'TKT-002',
-    requesterType: 'organizer',
-    requesterName: 'Rocking Events',
-    subject: 'Payout delayed',
-    category: 'payments',
-    eventName: 'Winter Bash',
-    eventId: 'EVT-002',
-    status: 'resolved' as const,
-    priority: 'medium' as const,
-    createdAt: '2026-10-04T10:00:00Z',
-  }
-]
+const { mockTicketsData } = vi.hoisted(() => ({
+  mockTicketsData: [
+    {
+      id: 'TKT-001',
+      requesterType: 'customer',
+      requesterName: 'Alice Smith',
+      subject: 'Cannot access my tickets',
+      category: 'tickets',
+      eventName: 'Summer Music Fest',
+      eventId: 'EVT-001',
+      status: 'open' as const,
+      priority: 'high' as const,
+      createdAt: '2026-10-05T10:00:00Z',
+    },
+    {
+      id: 'TKT-002',
+      requesterType: 'organizer',
+      requesterName: 'Rocking Events',
+      subject: 'Payout delayed',
+      category: 'payments',
+      eventName: 'Winter Bash',
+      eventId: 'EVT-002',
+      status: 'resolved' as const,
+      priority: 'medium' as const,
+      createdAt: '2026-10-04T10:00:00Z',
+    }
+  ]
+}))
 
 vi.mock('@/features/support/api', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@/features/support/api')>()
