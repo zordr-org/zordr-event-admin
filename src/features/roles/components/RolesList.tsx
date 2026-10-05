@@ -139,7 +139,7 @@ export function RolesList() {
 
       <div className="rounded-md border bg-card overflow-hidden">
         {isLoading ? (
-          <TableSkeleton columns={4} rows={5} />
+          <TableSkeleton cols={4} rows={5} />
         ) : (
           <DataTable
             data={data?.data || []}

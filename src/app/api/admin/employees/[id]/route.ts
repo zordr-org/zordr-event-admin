@@ -1,15 +1,14 @@
-import { NextResponse } from 'next'
-import { requireAuth } from '@/mocks/handlers'
+import { NextResponse } from 'next/server'
 import { mockEmployeesData } from '@/features/employees/mock'
 
 let employeesDb = [...mockEmployeesData]
+
+export const dynamic = 'force-dynamic'
 
 export async function PUT(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-  const authResponse = requireAuth(request, 'employees', 'edit')
-  if (authResponse) return authResponse
 
   const { id } = params
   const body = await request.json()

@@ -1,12 +1,12 @@
-import { NextResponse } from 'next'
-import { requireAuth } from '@/mocks/handlers'
+import { NextResponse } from 'next/server'
+
 import { mockSettingsData } from '@/features/settings/mock'
 
 let settingsDb = { ...mockSettingsData }
 
+export const dynamic = 'force-dynamic'
+
 export async function GET(request: Request) {
-  const authResponse = requireAuth(request, 'settings', 'view')
-  if (authResponse) return authResponse
 
   return NextResponse.json({
     success: true,
@@ -15,8 +15,6 @@ export async function GET(request: Request) {
 }
 
 export async function PATCH(request: Request) {
-  const authResponse = requireAuth(request, 'settings', 'edit')
-  if (authResponse) return authResponse
 
   const body = await request.json()
   

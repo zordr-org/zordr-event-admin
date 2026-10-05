@@ -1,12 +1,12 @@
-import { NextResponse } from 'next'
+import { NextResponse } from 'next/server'
 import { mockEmployeesData } from '@/features/employees/mock'
-import { requireAuth } from '@/mocks/handlers'
+
 
 let employeesDb = [...mockEmployeesData]
 
+export const dynamic = 'force-dynamic'
+
 export async function GET(request: Request) {
-  const authResponse = requireAuth(request, 'employees', 'view')
-  if (authResponse) return authResponse
 
   const { searchParams } = new URL(request.url)
   const page = parseInt(searchParams.get('page') || '1')

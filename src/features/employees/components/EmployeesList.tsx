@@ -75,20 +75,16 @@ export function EmployeesList() {
     {
       header: 'Status',
       accessorKey: 'status',
-      cell: (employee) => {
-        let variant: 'success' | 'warning' | 'destructive' | 'default' = 'default'
-        if (employee.status === 'active') variant = 'success'
-        if (employee.status === 'inactive') variant = 'destructive'
-        if (employee.status === 'invited') variant = 'warning'
-        return <StatusBadge status={employee.status} variant={variant} />
-      }
+      cell: (employee) => (
+        <StatusBadge status={employee.status} />
+      )
     },
     {
       header: 'Last Active',
       accessorKey: 'lastActiveAt',
       cell: (employee) => (
         <span className="text-muted-foreground text-sm">
-          {employee.lastActiveAt ? formatRelativeTime(new Date(employee.lastActiveAt)) : 'Never'}
+          {employee.lastActiveAt ? formatRelativeTime(employee.lastActiveAt) : 'Never'}
         </span>
       )
     },
@@ -236,18 +232,11 @@ export function EmployeesList() {
 
       <div className="rounded-md border bg-card overflow-hidden">
         {isLoading ? (
-          <TableSkeleton columns={6} rows={5} />
+          <TableSkeleton cols={6} rows={5} />
         ) : (
           <DataTable
             data={data?.data.employees || []}
             columns={columns}
-            pagination={{
-              page,
-              limit: 20,
-              total: data?.data.pagination.total || 0,
-              totalPages: data?.data.pagination.totalPages || 0,
-              onPageChange: setPage,
-            }}
           />
         )}
       </div>

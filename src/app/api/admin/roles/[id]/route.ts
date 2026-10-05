@@ -1,5 +1,4 @@
-import { NextResponse } from 'next'
-import { requireAuth } from '@/mocks/handlers'
+import { NextResponse } from 'next/server'
 import { mockRolesData } from '@/features/roles/mock'
 import { mockEmployeesData } from '@/features/employees/mock'
 
@@ -8,12 +7,12 @@ import { mockEmployeesData } from '@/features/employees/mock'
 // but it will work enough for client-side optimistic UI testing.
 let rolesDb = [...mockRolesData]
 
+export const dynamic = 'force-dynamic'
+
 export async function GET(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-  const authResponse = requireAuth(request, 'roles', 'view')
-  if (authResponse) return authResponse
 
   const { id } = params
   const role = rolesDb.find((r) => r.id === id)
@@ -35,8 +34,6 @@ export async function PUT(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-  const authResponse = requireAuth(request, 'roles', 'edit')
-  if (authResponse) return authResponse
 
   const { id } = params
   const body = await request.json()
@@ -65,8 +62,6 @@ export async function DELETE(
   request: Request,
   { params }: { params: { id: string } }
 ) {
-  const authResponse = requireAuth(request, 'roles', 'delete')
-  if (authResponse) return authResponse
 
   const { id } = params
   const roleIndex = rolesDb.findIndex((r) => r.id === id)

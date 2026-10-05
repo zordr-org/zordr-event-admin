@@ -1,13 +1,13 @@
-import { NextResponse } from 'next'
+import { NextResponse } from 'next/server'
 import { mockRolesData } from '@/features/roles/mock'
 import { mockEmployeesData } from '@/features/employees/mock'
-import { requireAuth } from '@/mocks/handlers'
+
 
 let rolesDb = [...mockRolesData]
 
+export const dynamic = 'force-dynamic'
+
 export async function GET(request: Request) {
-  const authResponse = requireAuth(request, 'roles', 'view')
-  if (authResponse) return authResponse
 
   const roles = rolesDb.map((role) => ({
     id: role.id,
@@ -24,8 +24,6 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const authResponse = requireAuth(request, 'roles', 'create')
-  if (authResponse) return authResponse
 
   const body = await request.json()
   const newRole = {

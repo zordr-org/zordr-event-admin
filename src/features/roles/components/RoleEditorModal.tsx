@@ -35,13 +35,16 @@ export function RoleEditorModal({
   const createMutation = useCreateRole()
   const updateMutation = useUpdateRole()
 
+  // Use CreateRoleFormData as the base type (superset of UpdateRoleFormData)
+  type FormValues = { name: string; description: string; permissions: Array<{ module: string; canView: boolean; canCreate: boolean; canEdit: boolean; canDelete: boolean; canExport: boolean }> }
+
   const {
     register,
     handleSubmit,
     reset,
     control,
     formState: { errors, isSubmitting },
-  } = useForm<any>({
+  } = useForm<FormValues>({
     resolver: zodResolver(isNew ? createRoleSchema : updateRoleSchema),
     defaultValues: {
       name: '',
@@ -178,7 +181,7 @@ export function RoleEditorModal({
                   <tbody className="divide-y">
                     {fields.map((field, index) => (
                       <tr key={field._id} className="hover:bg-muted/50">
-                        <td className="px-4 py-2 capitalize font-medium">{field.module}</td>
+                        <td className="px-4 py-2 capitalize font-medium">{MODULES[index]}</td>
                         <td className="px-4 py-2 text-center">
                           <input
                             type="checkbox"
