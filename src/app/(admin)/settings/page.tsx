@@ -1,22 +1,10 @@
-import type { Metadata } from 'next'
-import { PageHeader } from '@/components/shell/PageHeader'
-import { EmptyState } from '@/components/shell/EmptyState'
+import { Metadata } from 'next'
+import { SettingsForm } from '@/features/settings'
 
 export const metadata: Metadata = {
-  title: 'Settings | Zordr Admin Portal',
-  robots: { index: false, follow: false },
+  title: 'Settings | Zordr Admin',
 }
 
 export default function SettingsPage() {
-  return (
-    <div className="p-6 lg:p-8">
-      <PageHeader
-        title="Settings"
-        subtitle="Manage your platform settings, preferences, and configurations."
-      />
-      <div className="mt-12">
-        <EmptyState message="Settings screen is coming in the next sprint." />
-      </div>
-    </div>
-  )
+  return <SettingsForm />
 }

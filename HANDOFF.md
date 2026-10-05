@@ -89,4 +89,4 @@ Status: Complete and tested
 
 ## Next Steps
 
-With the shell, Organizers, Events, Orders, Customers, Settlements, Refunds, Support, and Analytics modules in place, the next phase is to build the actual content for the remaining placeholder modules, starting with the **Employees**, **Roles**, and **Settings** modules. Ensure you continue leveraging the established SOLID architecture and shared components like `PageHeader`, `KpiCard`, and `DataTable`.
+All requested modules for the Admin Shell are now complete (Organizers, Events, Orders, Customers, Settlements, Refunds, Support, Analytics, Employees, Roles, and Settings). The frontend shell application is ready for integration with the real backend. The immediate next step for the team is to address the Open Questions (like missing endpoints and field-level scoping) and to replace the mock data with actual data by setting `NEXT_PUBLIC_USE_MOCK_API=false`.

@@ -87,9 +87,10 @@ You can switch the mock user role by setting the `zordr_dev_role` cookie in your
 
 Available roles:
 - `super_admin`: Full access to everything.
-- `finance_exec`: View access to analytics, full access to settlements and refunds.
+- `finance_exec`: View access to analytics, full access to settlements and refunds, plus settings view/edit.
 - `support_exec`: View access to orders, customers, and dashboard. Full view/create/edit for support.
 - `marketing_exec`: View access to dashboard, events, customers, and analytics.
+- `operations_manager`: Custom role for testing custom roles functionality.
 
 ---
 
@@ -119,7 +120,7 @@ src/
     (admin)/
       layout.tsx         Admin group layout (shell with Sidebar & Topbar)
       dashboard/
-        page.tsx         Dashboard page
+        page.tsx         Dashboard module
       organizers/
         page.tsx         Organizers module
       events/
@@ -127,21 +128,21 @@ src/
       orders/
         page.tsx         Orders module
       customers/
-        page.tsx         Customers placeholder
+        page.tsx         Customers module
       settlements/
-        page.tsx         Settlements placeholder
+        page.tsx         Settlements module
       refunds/
         page.tsx         Refunds module
       support/
-        page.tsx         Support placeholder
+        page.tsx         Support module
       analytics/
-        page.tsx         Analytics placeholder
+        page.tsx         Analytics module
       employees/
-        page.tsx         Employees placeholder
+        page.tsx         Employees module
       roles/
-        page.tsx         Roles placeholder
+        page.tsx         Roles module
       settings/
-        page.tsx         Settings placeholder
+        page.tsx         Settings module
     api/
       admin/
         auth/
