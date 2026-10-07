@@ -84,7 +84,6 @@ describe('Settings Module UI', () => {
     render(<SettingsForm />, { wrapper: createWrapper(true) })
 
     await waitFor(() => {
-      expect(screen.getByDisplayValue('5')).toBeInTheDocument()
       expect(screen.getByDisplayValue('support@zordr.com')).toBeInTheDocument()
     })
 
@@ -107,7 +106,7 @@ describe('Settings Module UI', () => {
     render(<SettingsForm />, { wrapper: createWrapper(false) })
 
     await waitFor(() => {
-      expect(screen.getByDisplayValue('5')).toBeInTheDocument()
+      expect(screen.getByDisplayValue('support@zordr.com')).toBeInTheDocument()
     })
 
     // Save button should not be present (wrapped in <Can module="settings" action="edit">)

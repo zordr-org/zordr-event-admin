@@ -10,6 +10,7 @@ import { useUrlState } from '@/hooks/useUrlState'
 import { useSupportTickets, useSupportKpis } from '../hooks'
 import type { SupportTicketListItem, TicketStatus, TicketCategory, TicketPriority, RequesterType } from '../types'
 import { SupportDetailModal } from './SupportDetailModal'
+import { SupportSidebar } from './SupportSidebar'
 
 export function SupportList() {
   const { state: params, setUrlState: setParams, clearState } = useUrlState({
@@ -91,10 +92,10 @@ export function SupportList() {
   const kpiItems = React.useMemo(() => {
     if (!kpis) return []
     return [
+      { id: 'total', label: 'Total Tickets', value: String(kpis.totalTickets) },
+      { id: 'resolved', label: 'Resolved Tickets', value: String(kpis.resolvedTickets) },
       { id: 'open', label: 'Open Tickets', value: String(kpis.openTickets) },
-      { id: 'pending', label: 'Pending', value: String(kpis.pendingTickets) },
-      { id: 'resolved', label: 'Resolved', value: String(kpis.resolvedTickets) },
-      { id: 'high-priority', label: 'High Priority (Unresolved)', value: String(kpis.highPriority) },
+      { id: 'avg-resp', label: 'Avg. Response Time', value: kpis.avgResponseTime || 'N/A' },
     ]
   }, [kpis])
 
@@ -102,65 +103,74 @@ export function SupportList() {
     <div className="space-y-6">
       <KpiStrip items={kpiItems} isLoading={!kpis} />
       
-      <FilterBar
-        searchQuery={params.search || ''}
-        onSearchChange={(q) => setParams({ search: q || undefined, page: 1 })}
-        placeholder="Search tickets..."
-        onReset={clearState}
-      >
-        <select
-          className="h-10 px-3 rounded-md border border-input bg-transparent text-sm"
-          value={params.status || ''}
-          onChange={(e) => setParams({ status: (e.target.value || undefined) as TicketStatus, page: 1 })}
-        >
-          <option value="">All Statuses</option>
-          <option value="open">Open</option>
-          <option value="pending">Pending</option>
-          <option value="resolved">Resolved</option>
-        </select>
-        
-        <select
-          className="h-10 px-3 rounded-md border border-input bg-transparent text-sm"
-          value={params.category || ''}
-          onChange={(e) => setParams({ category: (e.target.value || undefined) as TicketCategory, page: 1 })}
-        >
-          <option value="">All Categories</option>
-          <option value="tickets">Tickets</option>
-          <option value="payments">Payments</option>
-          <option value="refunds">Refunds</option>
-          <option value="event_info">Event Info</option>
-          <option value="orders">Orders</option>
-          <option value="accessibility">Accessibility</option>
-          <option value="general">General</option>
-        </select>
+      <div className="flex gap-6 items-start">
+        <SupportSidebar 
+          currentCategory={(params.category as TicketCategory) || ''} 
+          onCategoryFilter={(c) => setParams({ category: c || undefined, page: 1 })}
+        />
 
-        <select
-          className="h-10 px-3 rounded-md border border-input bg-transparent text-sm"
-          value={params.priority || ''}
-          onChange={(e) => setParams({ priority: (e.target.value || undefined) as TicketPriority, page: 1 })}
-        >
-          <option value="">All Priorities</option>
-          <option value="high">High</option>
-          <option value="medium">Medium</option>
-          <option value="low">Low</option>
-        </select>
-        
-        <select
-          className="h-10 px-3 rounded-md border border-input bg-transparent text-sm"
-          value={params.requesterType || ''}
-          onChange={(e) => setParams({ requesterType: (e.target.value || undefined) as RequesterType, page: 1 })}
-        >
-          <option value="">All Requesters</option>
-          <option value="customer">Customer</option>
-          <option value="organizer">Organizer</option>
-        </select>
-      </FilterBar>
+        <div className="flex-1 space-y-4 overflow-hidden">
+          <FilterBar
+            searchQuery={params.search || ''}
+            onSearchChange={(q) => setParams({ search: q || undefined, page: 1 })}
+            placeholder="Search tickets..."
+            onReset={clearState}
+          >
+            <select
+              className="h-10 px-3 rounded-md border border-input bg-transparent text-sm"
+              value={params.status || ''}
+              onChange={(e) => setParams({ status: (e.target.value || undefined) as TicketStatus, page: 1 })}
+            >
+              <option value="">All Statuses</option>
+              <option value="open">Open</option>
+              <option value="pending">Pending</option>
+              <option value="resolved">Resolved</option>
+            </select>
+            
+            <select
+              className="h-10 px-3 rounded-md border border-input bg-transparent text-sm"
+              value={params.category || ''}
+              onChange={(e) => setParams({ category: (e.target.value || undefined) as TicketCategory, page: 1 })}
+            >
+              <option value="">All Categories</option>
+              <option value="tickets">Tickets</option>
+              <option value="payments">Payments</option>
+              <option value="refunds">Refunds</option>
+              <option value="event_info">Event Info</option>
+              <option value="orders">Orders</option>
+              <option value="accessibility">Accessibility</option>
+              <option value="general">General</option>
+            </select>
 
-      <DataTable
-        columns={columns}
-        data={listData?.data.tickets || []}
-        isLoading={isLoading}
-      />
+            <select
+              className="h-10 px-3 rounded-md border border-input bg-transparent text-sm"
+              value={params.priority || ''}
+              onChange={(e) => setParams({ priority: (e.target.value || undefined) as TicketPriority, page: 1 })}
+            >
+              <option value="">All Priorities</option>
+              <option value="high">High</option>
+              <option value="medium">Medium</option>
+              <option value="low">Low</option>
+            </select>
+            
+            <select
+              className="h-10 px-3 rounded-md border border-input bg-transparent text-sm"
+              value={params.requesterType || ''}
+              onChange={(e) => setParams({ requesterType: (e.target.value || undefined) as RequesterType, page: 1 })}
+            >
+              <option value="">All Requesters</option>
+              <option value="customer">Customer</option>
+              <option value="organizer">Organizer</option>
+            </select>
+          </FilterBar>
+
+          <DataTable
+            columns={columns}
+            data={listData?.data.tickets || []}
+            isLoading={isLoading}
+          />
+        </div>
+      </div>
 
       <SupportDetailModal
         open={modalOpen}

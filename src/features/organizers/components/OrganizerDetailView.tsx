@@ -17,8 +17,9 @@ import { OrganizerDocumentsTab } from './OrganizerDocumentsTab'
 import { OrganizerBankTab } from './OrganizerBankTab'
 import { OrganizerEventsList } from './OrganizerEventsList'
 import { OrganizerNotes } from './OrganizerNotes'
-
-// We will stub the others to just show EmptyState for now, or just basic UI,
+import { OrganizerRevenueTab } from './OrganizerRevenueTab'
+import { OrganizerSettlementsTab } from './OrganizerSettlementsTab'
+import { OrganizerSupportTab } from './OrganizerSupportTab'
 // but the prompt says: Events, Revenue, Settlements, Support Tickets: read-only lists
 // Since we don't have endpoints for events scoped to organizer in Admin yet,
 // wait, `GET /api/v1/admin/events` has `?organizerId=`
@@ -132,15 +133,14 @@ export function OrganizerDetailView({ id }: { id: string }) {
                 <OrganizerEventsList organizerId={id} />
               </TabsContent>
               
-              {/* Stub for others */}
               <TabsContent value="revenue" className="mt-0 outline-none">
-                <EmptyState title="Revenue" description="Revenue metrics coming soon." />
+                <OrganizerRevenueTab organizerId={id} />
               </TabsContent>
               <TabsContent value="settlements" className="mt-0 outline-none">
-                <EmptyState title="Settlements" description="Settlements table coming soon." />
+                <OrganizerSettlementsTab organizerId={id} />
               </TabsContent>
               <TabsContent value="support" className="mt-0 outline-none">
-                <EmptyState title="Support Tickets" description="Support tickets table coming soon." />
+                <OrganizerSupportTab organizerId={id} />
               </TabsContent>
               <TabsContent value="notes" className="mt-0 outline-none xl:hidden">
                 <OrganizerNotes organizerId={id} notes={org.notes} />

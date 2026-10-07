@@ -30,6 +30,12 @@ export interface EmployeesResponse {
       total: number
       totalPages: number
     }
+    kpi: {
+      totalEmployees: number
+      activeEmployees: number
+      pendingEmployees: number
+      inactiveEmployees: number
+    }
   }
 }
 

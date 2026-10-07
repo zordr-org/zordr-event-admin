@@ -43,10 +43,12 @@ export interface SupportFilters {
 }
 
 export interface SupportKpi {
+  totalTickets: number
   openTickets: number
   pendingTickets: number
   resolvedTickets: number
   highPriority: number
+  avgResponseTime: string
 }
 
 export interface SupportListResponse {

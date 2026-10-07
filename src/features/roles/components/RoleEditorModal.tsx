@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import { useForm, useFieldArray } from 'react-hook-form'
 import { useRole, useCreateRole, useUpdateRole } from '../hooks'
-import { createRoleSchema, updateRoleSchema, type CreateRoleFormData, type UpdateRoleFormData } from '../schemas'
-import type { Role } from '../types'
-import { MODULES } from '@/types/auth'
+import { createRoleSchema, updateRoleSchema } from '../schemas'
+import type { Role, RolePermission } from '../types'
+import { MODULES, type Module } from '@/types/auth'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
   Dialog,
@@ -16,6 +16,21 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Badge } from '@/components/ui/badge'
+
+type FormValues = { name: string; description: string; permissions: RolePermission[] }
+
+const PRESETS = {
+  'Read-Only Observer': (module: string) => ({ canView: true, canCreate: false, canEdit: false, canDelete: false, canExport: false }),
+  'Operations Manager': (module: string) => ({ canView: true, canCreate: true, canEdit: true, canDelete: false, canExport: true }),
+  'Event Moderator': (module: string) => ({ canView: true, canCreate: false, canEdit: true, canDelete: false, canExport: false }),
+  'Finance Specialist': (module: string) => {
+    if (['orders', 'settlements', 'refunds', 'analytics'].includes(module)) {
+      return { canView: true, canCreate: true, canEdit: true, canDelete: false, canExport: true }
+    }
+    return { canView: true, canCreate: false, canEdit: false, canDelete: false, canExport: false }
+  },
+}
 
 export function RoleEditorModal({
   role,
@@ -35,14 +50,13 @@ export function RoleEditorModal({
   const createMutation = useCreateRole()
   const updateMutation = useUpdateRole()
 
-  // Use CreateRoleFormData as the base type (superset of UpdateRoleFormData)
-  type FormValues = { name: string; description: string; permissions: Array<{ module: string; canView: boolean; canCreate: boolean; canEdit: boolean; canDelete: boolean; canExport: boolean }> }
-
   const {
     register,
     handleSubmit,
     reset,
     control,
+    setValue,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({
     resolver: zodResolver(isNew ? createRoleSchema : updateRoleSchema),
@@ -63,8 +77,10 @@ export function RoleEditorModal({
   const { fields } = useFieldArray({
     control,
     name: 'permissions',
-    keyName: '_id', // so we don't conflict with any `id` on the object
+    keyName: '_id',
   })
+
+  const permissions = watch('permissions') || []
 
   useEffect(() => {
     if (isNew) {
@@ -104,32 +120,68 @@ export function RoleEditorModal({
       if (isNew) {
         await createMutation.mutateAsync(data)
       } else {
-        // Exclude name and description for update as per schema
         await updateMutation.mutateAsync({
           id: roleId,
           data: { permissions: data.permissions },
-        })
+        } as any)
       }
       onOpenChange(false)
     } catch (error) {
-      // toast handled in hook
     }
   }
 
-  // System roles can't edit permissions except maybe viewing them. Wait, "system" roles usually aren't editable, but the contract says isDeletable. Let's make "system" roles readonly for permissions.
-  const isReadonly = !isNew && roleDetail?.type === 'system'
+  const setAllPermissions = (value: boolean) => {
+    MODULES.forEach((_, index) => {
+      setValue(`permissions.${index}.canView`, value)
+      setValue(`permissions.${index}.canCreate`, value)
+      setValue(`permissions.${index}.canEdit`, value)
+      setValue(`permissions.${index}.canDelete`, value)
+      setValue(`permissions.${index}.canExport`, value)
+    })
+  }
+
+  const applyPreset = (presetName: string) => {
+    if (!presetName || !PRESETS[presetName as keyof typeof PRESETS]) return
+    const generator = PRESETS[presetName as keyof typeof PRESETS]
+    
+    MODULES.forEach((module, index) => {
+      const config = generator(module)
+      setValue(`permissions.${index}.canView`, config.canView)
+      setValue(`permissions.${index}.canCreate`, config.canCreate)
+      setValue(`permissions.${index}.canEdit`, config.canEdit)
+      setValue(`permissions.${index}.canDelete`, config.canDelete)
+      setValue(`permissions.${index}.canExport`, config.canExport)
+    })
+  }
+
+  const isSuperAdmin = !isNew && roleDetail?.name === 'Super Admin'
+  const isNameReadonly = !isNew && roleDetail?.type === 'system'
+  
+  // Calculate stats
+  const totalPossible = MODULES.length * 5
+  let totalGranted = 0
+  let exportGranted = 0
+  let deleteGranted = 0
+  
+  permissions.forEach(p => {
+    if (p.canView) totalGranted++
+    if (p.canCreate) totalGranted++
+    if (p.canEdit) totalGranted++
+    if (p.canDelete) { totalGranted++; deleteGranted++ }
+    if (p.canExport) { totalGranted++; exportGranted++ }
+  })
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{isNew ? 'Create Custom Role' : `Edit Role: ${roleDetail?.name || ''}`}</DialogTitle>
           <DialogDescription>
             {isNew
               ? 'Define a new set of permissions for your team.'
-              : isReadonly
-              ? 'System roles have fixed permissions and cannot be modified.'
-              : 'Modify the permissions for this custom role.'}
+              : isSuperAdmin
+              ? 'The Super Admin role permissions are fixed.'
+              : 'Modify the permissions for this role. System roles can have permissions edited.'}
           </DialogDescription>
         </DialogHeader>
 
@@ -148,7 +200,7 @@ export function RoleEditorModal({
                     id="name"
                     {...register('name')}
                     placeholder="e.g. Content Reviewer"
-                    disabled={!isNew}
+                    disabled={isNameReadonly}
                   />
                   {errors.name && <p className="text-sm text-destructive">{errors.name?.message as string}</p>}
                 </div>
@@ -158,14 +210,45 @@ export function RoleEditorModal({
                     id="description"
                     {...register('description')}
                     placeholder="Brief description of this role"
-                    disabled={!isNew}
+                    disabled={isNameReadonly}
                   />
                 </div>
               </div>
             </div>
 
-            <div>
-              <h3 className="text-sm font-medium mb-4">Permissions Matrix</h3>
+            <div className="space-y-4">
+              <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                <div>
+                  <h3 className="text-sm font-medium">Permissions Matrix</h3>
+                  <div className="text-sm text-muted-foreground mt-1 flex items-center gap-2">
+                    <Badge variant="secondary">{totalGranted} / {totalPossible} granted</Badge>
+                    {exportGranted > 0 && <Badge variant="outline" className="text-orange-500 border-orange-200 bg-orange-50">Can Export ({exportGranted})</Badge>}
+                    {deleteGranted > 0 && <Badge variant="outline" className="text-destructive border-destructive/20 bg-destructive/10">Can Delete ({deleteGranted})</Badge>}
+                  </div>
+                </div>
+                
+                {!isSuperAdmin && (
+                  <div className="flex items-center gap-2">
+                    <select 
+                      className="h-9 px-3 rounded-md border border-input bg-transparent text-sm"
+                      onChange={(e) => applyPreset(e.target.value)}
+                      defaultValue=""
+                    >
+                      <option value="" disabled>Apply Preset...</option>
+                      {Object.keys(PRESETS).map(p => (
+                        <option key={p} value={p}>{p}</option>
+                      ))}
+                    </select>
+                    <Button type="button" variant="outline" size="sm" onClick={() => setAllPermissions(true)}>
+                      Select All
+                    </Button>
+                    <Button type="button" variant="outline" size="sm" onClick={() => setAllPermissions(false)}>
+                      Deselect All
+                    </Button>
+                  </div>
+                )}
+              </div>
+
               <div className="border rounded-md overflow-hidden">
                 <table className="w-full text-sm text-left">
                   <thead className="bg-muted">
@@ -186,7 +269,7 @@ export function RoleEditorModal({
                           <input
                             type="checkbox"
                             {...register(`permissions.${index}.canView`)}
-                            disabled={isReadonly}
+                            disabled={isSuperAdmin}
                             className="rounded border-input"
                           />
                         </td>
@@ -194,7 +277,7 @@ export function RoleEditorModal({
                           <input
                             type="checkbox"
                             {...register(`permissions.${index}.canCreate`)}
-                            disabled={isReadonly}
+                            disabled={isSuperAdmin}
                             className="rounded border-input"
                           />
                         </td>
@@ -202,7 +285,7 @@ export function RoleEditorModal({
                           <input
                             type="checkbox"
                             {...register(`permissions.${index}.canEdit`)}
-                            disabled={isReadonly}
+                            disabled={isSuperAdmin}
                             className="rounded border-input"
                           />
                         </td>
@@ -210,7 +293,7 @@ export function RoleEditorModal({
                           <input
                             type="checkbox"
                             {...register(`permissions.${index}.canDelete`)}
-                            disabled={isReadonly}
+                            disabled={isSuperAdmin}
                             className="rounded border-input"
                           />
                         </td>
@@ -218,7 +301,7 @@ export function RoleEditorModal({
                           <input
                             type="checkbox"
                             {...register(`permissions.${index}.canExport`)}
-                            disabled={isReadonly}
+                            disabled={isSuperAdmin}
                             className="rounded border-input"
                           />
                         </td>
@@ -231,9 +314,9 @@ export function RoleEditorModal({
 
             <div className="flex justify-end gap-2 pt-4">
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-                {isReadonly ? 'Close' : 'Cancel'}
+                {isSuperAdmin ? 'Close' : 'Cancel'}
               </Button>
-              {!isReadonly && (
+              {!isSuperAdmin && (
                 <Button type="submit" disabled={isSubmitting || createMutation.isPending || updateMutation.isPending}>
                   {isSubmitting ? 'Saving...' : 'Save Role'}
                 </Button>

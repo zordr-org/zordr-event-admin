@@ -146,6 +146,26 @@ export function AnalyticsDashboard() {
         </Can>
       </div>
 
+      {/* Narrative Insight Callout */}
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 rounded-lg p-5 shadow-sm">
+        <div className="flex items-start gap-4">
+          <div className="bg-blue-100 p-2 rounded-full mt-1 text-blue-600">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+          </div>
+          <div className="flex-1 space-y-1">
+            <h3 className="font-semibold text-blue-900">Performance Insight</h3>
+            <p className="text-blue-800 text-sm">
+              Event registrations grew by <strong>14.8%</strong> over the selected period, driven by Music & Tech festivals in Bengaluru and Mumbai.
+            </p>
+          </div>
+          <div className="flex flex-col gap-2">
+            <span className="inline-flex items-center rounded-md bg-orange-50 px-2 py-1 text-xs font-medium text-orange-700 ring-1 ring-inset ring-orange-600/20">
+              High Refund Rate (Cancellations)
+            </span>
+          </div>
+        </div>
+      </div>
+
       {/* KPI Strip */}
       {overviewError ? renderError(refetchOverview) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">

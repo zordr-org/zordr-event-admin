@@ -38,6 +38,11 @@ export async function GET(request: Request) {
   const startIndex = (page - 1) * limit
   const paginated = filtered.slice(startIndex, startIndex + limit)
 
+  const totalEmployees = employeesDb.length
+  const activeEmployees = employeesDb.filter((e) => e.status === 'active').length
+  const pendingEmployees = employeesDb.filter((e) => e.status === 'invited').length
+  const inactiveEmployees = employeesDb.filter((e) => e.status === 'inactive').length
+
   return NextResponse.json({
     success: true,
     data: {
@@ -48,6 +53,12 @@ export async function GET(request: Request) {
         total,
         totalPages,
       },
+      kpi: {
+        totalEmployees,
+        activeEmployees,
+        pendingEmployees,
+        inactiveEmployees,
+      }
     },
   })
 }

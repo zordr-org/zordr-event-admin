@@ -1,7 +1,7 @@
 # Handoff Document: Zordr Admin Portal - Admin Shell
 
-Date: 2026-10-02
-Scope: Admin Shell, Organizers Module, Events Module, Orders Module, and Code Audit
+Date: 2026-10-07
+Scope: Admin Shell Full Compliance (Settings, Roles, Employees, Support, Organizers, Analytics)
 Status: Complete and tested
 
 ---
@@ -13,15 +13,18 @@ Status: Complete and tested
 - Added a stub `forgot-password` page inside the `(auth)` group, which just contains basic UI matching the design system (no actual API wiring yet, as it's a stub).
 
 ### Features Built
-- **Organizers Module**: Implemented list view, detail view, suspension/rejection flows, and centralized mock API (`src/features/organizers/api.ts`).
+- **Organizers Module**: Implemented list view, detail view, suspension/rejection flows, and centralized mock API. Added functional sub-tabs for Revenue Breakdown, Settlements, and Support Tickets.
 - **Events Module**: Implemented review checklists, approval/rejection flows, KPI strips, and fully parameterized mock data.
 - **Orders Module**: Implemented bulk actions (Refunds, Exports), bulk selections, and robust UI feedback mechanisms.
 - **Customers Module**: Implemented list view, block/unblock actions with required reasons, and fixed routing loops.
-- **Settlements Module**: Implemented list view, hold actions with required reasons, mark paid functionality, and settlement generation logic. Includes KPI strips and comprehensive test coverage.
-- **Refunds Module**: Implemented list view and review flow (Approve/Reject). Added cross-module logic to adjust pending settlements upon refund approval. Includes comprehensive UI and Server-side tests.
-- **Support Module**: Implemented list view, ticket thread detail drawer, mock API for thread parsing, and role-based action gating (resolving/replying). Includes a fully functional thread interaction flow.
-- **Analytics Module**: Built platform-wide KPI dashboard with time-series trend charts, breakdown donuts, and leaderboards. Implemented robust per-widget loading and error handling, along with PDF/CSV export functionality.
-- **Comprehensive Audit**: Executed a full codebase audit enforcing strict typing, `SOLID` principles, route handler correctness (moved from `v1/admin` to `admin`), Turbopack integration for development (`dev` script), fixing broken ARIA labels in tests, and resolving exhaustive-deps. All tests now pass cleanly with a 0-error build.
+- **Settlements Module**: Implemented list view, hold actions with required reasons, mark paid functionality, and settlement generation logic.
+- **Refunds Module**: Implemented list view and review flow (Approve/Reject). Added cross-module logic to adjust pending settlements upon refund approval.
+- **Support Module**: Built list view with a new interactive Support Sidebar (category filters, quick actions, SLA tracking). Implemented ticket thread detail drawer and role-based action gating.
+- **Analytics Module**: Built KPI dashboard with time-series charts, breakdowns, leaderboards, PDF/CSV export, and added a dynamic Narrative Insight Callout banner for automated performance commentary.
+- **Settings Module**: Rebuilt `SettingsForm` into an enterprise-grade 7-tab layout (General, Users, Notifications, Payments, Platform, Security, Integrations).
+- **Roles Module**: Refined RBAC matrix to unlock system-role permission editing (except Super Admin). Added Presets dropdown, bulk selection tools, and real-time capability badge tracking.
+- **Employees Module**: Added dynamic KPI strip tracking Total, Active, Pending, and Inactive employees based on mock API data.
+- **Comprehensive Audit & Verification**: Executed full codebase audit enforcing strict typing, ARIA compliance (fixed hidden tab label-input associations), and 100% test pass rate with 0 build errors.
 
 ### Nav Config
 - Created `src/config/nav.ts` as the single source of truth for the admin shell sidebar.

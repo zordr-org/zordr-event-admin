@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { PageHeader } from '@/components/shell/PageHeader'
 import { DataTable, type ColumnDef } from '@/components/shared/DataTable'
+import { KpiStrip } from '@/components/shared/KpiStrip'
 import { StatusBadge } from '@/components/shell/StatusBadge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -41,6 +42,17 @@ export function EmployeesList() {
     ...(roleId && { roleId }),
     ...(status && { status: status as Employee['status'] }),
   })
+
+  const kpis = data?.data.kpi
+  const kpiItems = useMemo(() => {
+    if (!kpis) return []
+    return [
+      { id: 'total', label: 'Total Employees', value: String(kpis.totalEmployees) },
+      { id: 'active', label: 'Active Employees', value: String(kpis.activeEmployees) },
+      { id: 'pending', label: 'Invited / Pending', value: String(kpis.pendingEmployees) },
+      { id: 'inactive', label: 'Inactive', value: String(kpis.inactiveEmployees) },
+    ]
+  }, [kpis])
 
   const [isInviteOpen, setIsInviteOpen] = useState(false)
   const [editEmployee, setEditEmployee] = useState<Employee | null>(null)
@@ -178,6 +190,8 @@ export function EmployeesList() {
           </div>
         }
       />
+
+      <KpiStrip items={kpiItems} isLoading={isLoading && !kpis} />
 
       <div className="flex flex-wrap items-center gap-3 p-4 bg-card rounded-md border">
         <div className="relative flex-1 min-w-[200px] max-w-[400px]">
