@@ -207,7 +207,7 @@ src/
 
 The backend sets an httpOnly cookie named `zordr_admin_session` on successful login. The frontend never reads or writes this cookie directly. Session presence is checked server-side in `src/middleware.ts` to enforce route access.
 
-Password is never logged, stored in state, or placed in a URL parameter.
+Password is never logged; stored in state, or placed in a URL parameter.
 
 ---
 
